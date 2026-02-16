@@ -1,7 +1,6 @@
 import React from "react"
 import "./Navbar.css"
-import logoClosed from "/assets/freeroomsDoorClosed.png"
-import logoOpen from "/assets/freeRoomsLogo.png"
+
 import {Grid2X2, MapIcon, MoonIcon, SearchIcon } from 'lucide-react';
 
 export default function Navbar ({isOpen, onToggleDoor}) {
@@ -14,8 +13,12 @@ export default function Navbar ({isOpen, onToggleDoor}) {
                     aria-label = "Freerooms">
                     <img 
                         className="nav__logo"
-                        src = {isOpen ? logoOpen : logoClosed}
-                        alt = "Freerooms logo"
+                        src={
+                            isOpen
+                            ? "/assets/freeRoomsLogo.png"
+                            : "/assets/freeroomsDoorClosed.png"
+                        }
+                        alt="Freerooms logo"
                     />
                 </button>
                 

@@ -13,7 +13,7 @@
   justify-content: space-between;
 }
 
-/* left + right fixed width-ish */
+/* Filter button */
 .controls__left {
     margin-right: 0;
 }
@@ -22,13 +22,13 @@
 .controls__center {
   flex: 1;
   display: flex;
-  justify-content: center; /* keeps search centered like screenshot */
+  justify-content: center; 
 }
 
 /* Search bar wrapper */
 .controls__searchWrap {
   position: relative;
-  width: min(820px, 100%); /* wide, but capped */
+  width: min(820px, 100%);
 }
 
 .controls__searchIcon {
@@ -61,8 +61,15 @@
   padding: 0 14px 0 44px; /* space for icon */
   background: #fff;
   outline: none;
-  font-size: 18px
+  font-size: 18px;
+  transition: border 0.2s ease;
 }
+
+.controls__searchInput:focus-within {
+  border: 0.5px solid #f4daca;
+  box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.2);
+}
+
 
 /* Buttons like screenshot */
 .controls__btn {
@@ -86,4 +93,15 @@
   color: #f97316;
 }
 
+.controls__btn:hover {
+    transform: scale(0.98), back;
+    background: #eee6d4;
+}
 
+.controls__btn:active {
+    transform: scale(0.9);
+}
+
+.controls__btn {
+  transition: all 0.2s ease;
+}
