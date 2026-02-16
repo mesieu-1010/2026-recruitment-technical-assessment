@@ -1,13 +1,12 @@
 import { useMemo, useState } from "react";
 import Navbar from "./Components/Navbar/Navbar";
 import Controls from "./Components/Controls/Controls";
-
+import BuildingGrid from "./Components/BuildingGrid/BuildingGrid";
+import data from "../../data.json"
 
 
 function App() {
   const [isOpen, setIsOpen] = useState(true);
-
-  
 
   return (
     <div className="page">
@@ -17,8 +16,7 @@ function App() {
         />
 
         <Controls/>
-
-        
+        <BuildingGrid Buildings={data}/>
     </div>
   );
 }

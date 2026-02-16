@@ -1,7 +1,7 @@
 import React from "react"
 import "./Navbar.css"
-import logoClosed from "../../../assets/freeroomsDoorClosed.png"
-import logoOpen from "../../../assets/freeRoomsLogo.png"
+import logoClosed from "/assets/freeroomsDoorClosed.png"
+import logoOpen from "/assets/freeRoomsLogo.png"
 import {Grid2X2, MapIcon, MoonIcon, SearchIcon } from 'lucide-react';
 
 export default function Navbar ({isOpen, onToggleDoor}) {
