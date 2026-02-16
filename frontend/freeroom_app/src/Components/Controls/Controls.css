@@ -1,0 +1,94 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin: 16px 0;
+  width: 100%;
+  padding: 0 32px;
+  justify-content: space-between;
+}
+
+/* left + right fixed width-ish */
+.controls__left {
+    margin-right: 0;
+}
+
+/* center takes remaining space */
+.controls__center {
+  flex: 1;
+  display: flex;
+  justify-content: center; /* keeps search centered like screenshot */
+}
+
+/* Search bar wrapper */
+.controls__searchWrap {
+  position: relative;
+  width: min(820px, 100%); /* wide, but capped */
+}
+
+.controls__searchIcon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  color: #9aa0a6;
+}
+
+/* ICON */
+.controls__searchIcon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  color: rgba(0, 0, 0, 0.45);
+  pointer-events: none; /* makes input clickable */
+}
+
+.controls__searchInput {
+  width: 100%;
+  height: 44px;
+  border-radius: 5px;
+  border: 1px solid #e6e6e6;
+  padding: 0 14px 0 44px; /* space for icon */
+  background: #fff;
+  outline: none;
+  font-size: 18px
+}
+
+/* Buttons like screenshot */
+.controls__btn {
+  height: 44px;
+  padding: 0 16px;
+  border-radius: 10px;
+  border: 2px solid #f97316; /* orange border */
+  background: #fff;
+  color: #f97316;
+  font-weight: 1000;
+  font-size: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.FilterIcon, .SortIcon {
+  width: 22px;
+  height: 22px;
+  color: #f97316;
+}
+
+

@@ -1,0 +1,72 @@
+.nav {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav__left {
+  display: flex;
+  align-items: center;
+  gap: 0 px; /* space between logo and text */
+}
+
+.nav__title {
+  font-size: 25px;
+  font-weight: 600;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: rgba(255, 162, 0, 0.926);
+}
+
+.nav__logoBtn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.nav__logo {
+  height: 60px;
+  width: auto;
+}
+
+.nav__right {
+  display: flex;
+  gap: 10px;
+}
+
+.nav__icon {
+  color: #ff7a00;   /* orange */
+  width: 20px;
+  height: 20px;
+}
+
+.nav__iconBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+}
+
+.nav__iconBtn {
+  transition: background 0.2s ease, box-shadow 0.15s ease;
+}
+
+.nav__iconBtn:hover {
+  background: rgba(255, 122, 0, 0.1);
+  transform: scale (0.92)
+}
+
+.nav__iconBtn:hover .nav__icon {
+  color: #ff7a00;
+}
+
+.nav__iconBtn:active {
+    transform: scale(0.85);
+}
+
