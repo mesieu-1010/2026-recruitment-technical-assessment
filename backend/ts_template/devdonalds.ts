@@ -169,10 +169,74 @@
   // [TASK 3] ====================================================================
   // Endpoint that returns a summary of a recipe that corresponds to a query name
   app.get("/summary", (req:Request, res:Response) => {
-    // TODO: implement me
-    res.status(500).send("not yet implemented!")
+    // [TASK 3] ====================================================================
+  try {
+    const recipeName = typeof req.query.name === "string" ? req.query.name.trim() : "";
+    const recipeEntry = cookbook.get(recipeName);
 
-  });
+    if (!recipeName || !recipeEntry || recipeEntry.type !== "recipe") {
+      return res.status(400).send();
+    }
+
+    // Accumulates base ingredient quantities
+    const ingredientTotals = new Map<string, number>();
+    const accumulateIngredient = (name: string, quantity: number) => {
+    let currentTotal = ingredientTotals.get(name);
+
+    if (currentTotal === undefined) {
+      currentTotal = 0;
+    }
+
+    const newTotal = currentTotal + quantity;
+    ingredientTotals.set(name, newTotal);
+    };
+
+
+    const resolveRecipe = (entryName: string, quantityMultiplier: number): number => {
+      const entry = cookbook.get(entryName);
+      if (!entry) throw new Error("Missing dependency");
+
+      // Base ingredient
+      if (entry.type === "ingredient") {
+        const ingredientEntry = entry as ingredient;
+        accumulateIngredient(ingredientEntry.name, quantityMultiplier);
+        return ingredientEntry.cookTime * quantityMultiplier;
+      }
+
+      // Nested recipe
+      const recipe = entry as recipe;
+      let totalCookTime = 0;
+
+      for (const item of recipe.requiredItems) {
+        totalCookTime += resolveRecipe(
+          item.name,
+          quantityMultiplier * item.quantity
+        );
+      }
+
+      return totalCookTime;
+    };
+
+    const totalCookTime = resolveRecipe(recipeName, 1);
+
+    const ingredients: requiredItem[] = Array.from(
+      ingredientTotals.entries()
+    ).map(([name, quantity]) => ({ name, quantity }));
+
+    return res.status(200).json({
+      name: recipeName,
+      cookTime: totalCookTime,
+      ingredients,
+    });
+
+  } catch {
+
+    return res.status(400).send();
+    
+  }});
+
+
+  
 
   // =============================================================================
   // ==== DO NOT TOUCH ===========================================================
