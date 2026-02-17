@@ -99,49 +99,59 @@
 
   // Handle ingredient input
   function ValidateIngrdient(body: any): boolean {
-    return (
-      body &&
-      body.type === "ingredient" &&
-      typeof body.name === "string" &&
-      body.name.trim().length > 0 &&
-      typeof body.cookTime === "number" &&
-      Number.isInteger(body.cookTime) &&
-      body.cookTime >= 0
-    );
+    const parsedName = body?.name && typeof body.name === "string"
+    ? parse_handwriting(body.name)
+    : null;
+
+  return (
+    body &&
+    body.type === "ingredient" &&
+    typeof body.name === "string" &&
+    parsedName !== null &&
+    typeof body.cookTime === "number" &&
+    Number.isInteger(body.cookTime) &&
+    body.cookTime >= 0
+  );
   }
 
   // Handle Recipe input
   function ValidateRecipe(body: any): boolean {
+    const parsedRecipeName =
+    body?.name && typeof body.name === "string" ? parse_handwriting(body.name) : null;
+
     if (
       !body ||
       body.type !== "recipe" ||
       typeof body.name !== "string" ||
-      body.name.trim().length === 0 ||
+      parsedRecipeName === null ||
       !Array.isArray(body.requiredItems)
     ) {
       return false;
     }
 
-    const name_seen = new Set <string>();
+    const name_seen = new Set<string>();
 
     for (const item of body.requiredItems) {
-      
+      if (typeof item?.name !== "string") {
+        return false;
+      }
+
+      const parsedItemName = parse_handwriting(item.name);
+
       if (
-        typeof item.name !== "string" ||
-        item.name.trim().length === 0 ||
+        !parsedItemName ||
         typeof item.quantity !== "number" ||
         !Number.isInteger(item.quantity) ||
-        item.quantity < 1 
+        item.quantity < 1
       ) {
         return false;
       }
-      
-      // Check for required items with same names
-      if (name_seen.has(item.name)) {
+
+      if (name_seen.has(parsedItemName)) {
         return false;
       }
 
-      name_seen.add(item.name);
+      name_seen.add(parsedItemName);
     }
 
     return true;
@@ -151,18 +161,36 @@
     // TODO: implement me
     const body = req.body;
 
-    if (ValidateIngrdient(body) || ValidateRecipe(body)) {
-
-      // Check for unique entry name
-      if (cookbook.has(body.name)) {
-        return res.status(400).send();
-      }
-
-      cookbook.set(body.name, body);
-      return res.status(200).send();
+    if (!ValidateIngrdient(body) && !ValidateRecipe(body)) {
+      return res.status(400).send();
     }
 
-    return res.status(400).send();
+    const parsed_name = parse_handwriting(body.name);
+
+    if (!parsed_name) {
+      return res.status(400).send();
+    }
+
+    body.name = parsed_name;
+    
+    if (body.type === "recipe") {
+      for (const item of body.requiredItems) {
+        const parsedItem = parse_handwriting(item.name);
+
+        if (!parsedItem) {
+          return res.status(400).send()
+        };
+
+        item.name = parsedItem;
+      }
+    }
+    
+    if (cookbook.has(parsed_name)) {
+      return res.status(400).send();
+    }
+
+    cookbook.set(parsed_name, body);
+    return res.status(200).send();
 
   });
 
@@ -171,27 +199,35 @@
   app.get("/summary", (req:Request, res:Response) => {
     // [TASK 3] ====================================================================
   try {
-    const recipeName = typeof req.query.name === "string" ? req.query.name.trim() : "";
+
+    const rawName = typeof req.query.name === "string" ? req.query.name.trim() : "";
+    const recipeName = parse_handwriting(rawName);
+
+    if (!recipeName) {
+      return res.status(400).send();
+    }
+
     const recipeEntry = cookbook.get(recipeName);
 
-    if (!recipeName || !recipeEntry || recipeEntry.type !== "recipe") {
+    if (!recipeEntry || recipeEntry.type !== "recipe") {
       return res.status(400).send();
     }
 
     // Accumulates base ingredient quantities
     const ingredientTotals = new Map<string, number>();
+
     const accumulateIngredient = (name: string, quantity: number) => {
-    let currentTotal = ingredientTotals.get(name);
+      let currentTotal = ingredientTotals.get(name);
 
-    if (currentTotal === undefined) {
-      currentTotal = 0;
-    }
+      if (currentTotal === undefined) {
+        currentTotal = 0;
+      }
 
-    const newTotal = currentTotal + quantity;
-    ingredientTotals.set(name, newTotal);
+      const newTotal = currentTotal + quantity;
+      ingredientTotals.set(name, newTotal);
     };
 
-
+    // Uses recursion - backtracking to check for the cases
     const resolveRecipe = (entryName: string, quantityMultiplier: number): number => {
       const entry = cookbook.get(entryName);
       if (!entry) throw new Error("Missing dependency");
@@ -230,9 +266,8 @@
     });
 
   } catch {
-
     return res.status(400).send();
-    
+
   }});
 
 
