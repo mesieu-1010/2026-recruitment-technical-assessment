@@ -116,7 +116,7 @@ describe("Task 3", () => {
     it("What is bro doing - Get ingredient", async () => {
       const resp = await postEntry({
         type: "ingredient",
-        name: "beef",
+        name: "Tomatoes",
         cookTime: 2,
       });
       expect(resp.status).toBe(200);
