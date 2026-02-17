@@ -7,11 +7,11 @@
 }
 
 /* responsive like Freerooms */
-@media (max-width: 1250px) {
+@media (max-width: 1296px) {
   .Grid { grid-template-columns: repeat(4, 1fr); }
 }
 
-@media (max-width: 992px) {
+@media (max-width: 1000px) {
   .Grid { grid-template-columns: repeat(2, 1fr); }
 }
 
